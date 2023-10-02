@@ -1,0 +1,15 @@
+textarea {
+  resize: none;
+}
+
+#notesDiv {
+  margin: 30px;
+}
+
+.noteElement {
+  margin-top: 30px;
+}
+
+.save, .delete {
+  width: 200px;
+}
