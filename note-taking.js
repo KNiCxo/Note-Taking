@@ -25,12 +25,15 @@ function createNote() {
 
 function saveNote(noteNum) {
   const note = document.querySelector(`.textArea${noteNum}`);
+  note.readOnly = true;
   noteArr.push(note.value);
   noteArr.forEach(index => console.log(index));
+
 
   document.querySelector(`.saveBtn${noteNum}`).style.display = "none";
   document.querySelector(`.deleteBtn${noteNum}`).style.display = "none";
   createNoteBtn.disabled = false;
+
 }
 
 function deleteNote(noteNum) {
