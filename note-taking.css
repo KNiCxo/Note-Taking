@@ -1,18 +1,22 @@
+/* Styling for textarea */
 textarea {
   resize: none;
   outline: none;
 }
 
+/* Styling for Div element that holds all of the notes */
 #notesDiv {
   margin-top: 30px;
   width: 100%;
 }
 
+/* Styling for each individual note element */
 .noteElement {
   margin-bottom: 15px;
   text-align: center;
 }
 
+/* Styling for Edit and Delete buttons */
 .edit, .delete {
   width: 200px;
 }
