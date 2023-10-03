@@ -4,13 +4,15 @@ textarea {
 }
 
 #notesDiv {
-  margin: 30px;
+  margin-top: 30px;
+  width: 100%;
 }
 
 .noteElement {
-  margin-top: 30px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-.save, .delete {
+.edit, .delete {
   width: 200px;
 }
