@@ -1,8 +1,8 @@
 // "New Note" button element
-const createNoteBtn = document.getElementById("createNote");
+const createNoteBtn = document.getElementById('createNote');
 
 // Notes Div element
-const notesDiv = document.getElementById("notesDiv");
+const notesDiv = document.getElementById('notesDiv');
 
 // Counter for note total
 let numNotes = 0;
@@ -22,61 +22,46 @@ function createNote() {
   numNotes++;
 
   // Adds note HTML to the top of the Div
-  notesDiv.innerHTML = 
-  `<div class="noteElement note${numNotes}" data-note-number="${numNotes}">
-    <textarea class="textArea${numNotes}" cols="35" rows="10"></textarea> 
-    <button class="edit editBtn${numNotes}">Save</button> 
-    <button class="delete deleteBtn${numNotes}">Delete</button>
-  </div>` + notesDiv.innerHTML;
-
-  // Edit and Delete buttons appear/disappear when hovering/not hovering over the note
-  document.querySelectorAll(`.noteElement`).forEach((note) => {
-    note.addEventListener('mouseover', () => {
-      // Gets note number from the note HTML
-      const noteNum = note.dataset.noteNumber;
-
-      // If user is editing a note, mouseover effect won't work
-      if (!isEditing) {
-        document.querySelector(`.editBtn${noteNum}`).style.visibility = "visible";
-        document.querySelector(`.deleteBtn${noteNum}`).style.visibility = "visible";
-      }
-    });
-  
-    note.addEventListener('mouseout', () => {
-      // Gets note number from the note HTML
-      const noteNum = note.dataset.noteNumber;
-
-      // If user is editing a note, mouseout effect won't work 
-      if (!isEditing) {
-        document.querySelector(`.editBtn${noteNum}`).style.visibility = "hidden";
-        document.querySelector(`.deleteBtn${noteNum}`).style.visibility = "hidden";
-      }
-    });
-  });
+  const note = document.createElement("div");
+  note.className = "noteElement";
+  note.classList.add(`note${numNotes}`);
+  note.dataset.noteNumber = numNotes;
+  note.innerHTML = 
+  `<textarea class="textArea${numNotes}" cols="35" rows="10"></textarea> 
+   <button class="edit editBtn${numNotes}">Save</button> 
+   <button class="delete deleteBtn${numNotes}">Delete</button>`;
+  notesDiv.prepend(note);
 
   // Saves the new note when clicked
   document.querySelector(`.editBtn${numNotes}`).addEventListener('click', () => {
-    saveNote(numNotes);
+    editNote(note.dataset.noteNumber);
   });
 
   // Deletes the new note when clicked
   document.querySelector(`.deleteBtn${numNotes}`).addEventListener('click', () => {
-    deleteNote(numNotes);
+    deleteNote(note.dataset.noteNumber);
+  });
+
+  // Edit and Delete buttons appear when hovering over the note
+  document.querySelector(`.note${numNotes}`).addEventListener('mouseover', (event) => {
+    hover(event, isEditing, note.dataset.noteNumber);
+  });
+  
+  // Edit and Delete buttons disappear when not hovering over the note
+  document.querySelector(`.noteElement`).addEventListener('mouseout', (event) => {
+    hover(event, isEditing, note.dataset.noteNumber);
   });
 
   // Sets isEditing to true so mouseover/mouseout effect doesn't work
   isEditing = true;
 
-  // Prevents  "New Note" button from being pressed
+  // Prevents "New Note" button from being pressed
   createNoteBtn.disabled = true;
-
-  // Load all of the text into each note element
-  loadText();
 }
 
-// Saves a new note 
+// Function to edit/save a note 
 // *** TODO: Save changes made to a note *** \\
-function saveNote(noteNum) {
+function editNote(noteNum) {
   // Gets note that was selected to be saved and "locks" it then pushes note text into array
   const note = document.querySelector(`.textArea${noteNum}`);
   note.readOnly = true;
@@ -94,16 +79,17 @@ function saveNote(noteNum) {
   createNoteBtn.disabled = false;
 }
 
-// Deletes a new note, enabled "Neew Note" button, and decreases note count
+// Deletes a new note, enables "New Note" button, and decreases note count
 function deleteNote(noteNum) {
   document.querySelector(`.note${noteNum}`).remove();
   createNoteBtn.disabled = false;
   numNotes--;
 }
 
-// Loads the note text into their respective textarea elements
-function loadText() {
-  for (let i = 0; i < numNotes - 1; i++) {
-    document.querySelector(`.textArea${i+1}`).value = noteArr[i];
+// Shows or hides Edit and Delete buttons depending on event type
+function hover(event, isEditing, noteNum) {
+  if (!isEditing) {
+    document.querySelector(`.editBtn${noteNum}`).style.visibility = (event.type === "mouseover") ? "visible" : "hidden";
+    document.querySelector(`.deleteBtn${noteNum}`).style.visibility = (event.type === "mouseover") ? "visible" : "hidden";
   }
 }
