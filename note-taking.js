@@ -60,23 +60,34 @@ function createNote() {
 }
 
 // Function to edit/save a note 
-// *** TODO: Save changes made to a note *** \\
 function editNote(noteNum) {
-  // Gets note that was selected to be saved and "locks" it then pushes note text into array
+  // Gets elements of the Edit button being clicked and the note associated with it
+  const editBtn = document.querySelector(`.editBtn${noteNum}`);
   const note = document.querySelector(`.textArea${noteNum}`);
-  note.readOnly = true;
-  noteArr.push(note.value);
 
-  // TEMP LINE DELETE LATER
-  noteArr.forEach(index => console.log(index));
+  // If button is clicked and says 'Edit", unlock note, change button to 'Save', and lock 'New Note' button
+  // Else, save note, lock note, change button to 'Edit', and unlock 'New Note' button
+  if (editBtn.innerHTML === 'Edit') {
+    isEditing = true;
+    note.readOnly = false;
+    editBtn.innerHTML = 'Save';
+    createNoteBtn.disabled = true;
+  } else {
+    // If numNotes > array length then it is a new note and should be pushed into the array
+    // Else, store new note value in the array at the correct index
+    if (numNotes > noteArr.length) {
+      noteArr.push(note.value);
+    } else {
+      noteArr[noteNum - 1] = note.value;
+    }
 
-  // Hides Edit and Delete buttons
-  document.querySelector(`.editBtn${noteNum}`).style.visibility = "hidden";
-  document.querySelector(`.deleteBtn${noteNum}`).style.visibility = "hidden";
-
-  // Sets isEditing to false and enabled "New Note" button
-  isEditing = false;
-  createNoteBtn.disabled = false;
+    isEditing = false;
+    note.readOnly = true;
+    editBtn.innerHTML = 'Edit';
+    createNoteBtn.disabled = false;
+    // *** TEMP LINE DELETE LATER *** \\
+    noteArr.forEach(index => console.log(index));
+  }
 }
 
 // Deletes a new note, enables "New Note" button, and decreases note count
