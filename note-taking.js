@@ -5,19 +5,73 @@ const createNoteBtn = document.getElementById('createNote');
 const notesDiv = document.getElementById('notesDiv');
 
 // Counter for note total
-let numNotes = 0;
+let numNotes = JSON.parse(localStorage.getItem('numNotes'));
+if (!numNotes) {
+  numNotes = 0;
+}
 
 // Gives each note a unique ID
-let noteIDCounter = 0;
+let noteIDCounter = JSON.parse(localStorage.getItem('noteIDCounter'));
+if (!noteIDCounter) {
+  noteIDCounter = 0;
+}
 
 // Array to store all notes
-let noteArr = [];
+let noteArr = JSON.parse(localStorage.getItem('noteArr'));
+if (!noteArr) {
+  noteArr = [];
+}
 
 // Flag for when user is editing a note
 let isEditing = false;
 
 // Runs createNote function when clicked
 createNoteBtn.addEventListener('click', createNote);
+
+// Loads all existing notes (if there are any)
+drawNotes();
+
+// Creates button functionality for each note node
+function createEventListeners(noteID) {
+  // Edits/Saves the new note when clicked
+  document.querySelector(`.editBtn${noteID}`).addEventListener('click', () => {
+    editNote(noteID);
+  });
+
+  // Deletes the new note when clicked
+  document.querySelector(`.deleteBtn${noteID}`).addEventListener('click', () => {
+    deleteNote(noteID);
+  });
+
+  // Edit and Delete buttons appear when hovering over the note
+  document.querySelector(`.note${noteID}`).addEventListener('mouseover', event => {
+    hover(event, isEditing, noteID);
+  });
+  
+  // Edit and Delete buttons disappear when not hovering over the note
+  document.querySelector(`.note${noteID}`).addEventListener('mouseout', event => {
+    hover(event, isEditing, noteID);
+  });
+}
+
+// Draws all existing notes onto the page
+function drawNotes() {
+  noteArr.forEach(index => {
+    // Adds note HTML to the top of the Div
+    const note = document.createElement("div");
+    note.className = "noteElement";
+    note.classList.add(`note${index.noteID}`);
+    note.dataset.noteNumber = index.noteID;
+    note.innerHTML = 
+    `<textarea class="textArea${index.noteID}" cols="35" rows="10" readOnly>${index.noteText}</textarea> 
+    <button class="edit editBtn${index.noteID}">Edit</button> 
+    <button class="delete deleteBtn${index.noteID}">Delete</button>`;
+    notesDiv.prepend(note);
+
+    // Creates Event Listeners for the Edit and Delete buttons
+    createEventListeners(note.dataset.noteNumber);
+  });
+}
 
 // Creates a new note
 function createNote() {
@@ -36,25 +90,8 @@ function createNote() {
    <button class="delete deleteBtn${noteIDCounter}">Delete</button>`;
   notesDiv.prepend(note);
 
-  // Saves the new note when clicked
-  document.querySelector(`.editBtn${noteIDCounter}`).addEventListener('click', () => {
-    editNote(note.dataset.noteNumber);
-  });
-
-  // Deletes the new note when clicked
-  document.querySelector(`.deleteBtn${noteIDCounter}`).addEventListener('click', () => {
-    deleteNote(note.dataset.noteNumber);
-  });
-
-  // Edit and Delete buttons appear when hovering over the note
-  document.querySelector(`.note${noteIDCounter}`).addEventListener('mouseover', (event) => {
-    hover(event, isEditing, note.dataset.noteNumber);
-  });
-  
-  // Edit and Delete buttons disappear when not hovering over the note
-  document.querySelector(`.noteElement`).addEventListener('mouseout', (event) => {
-    hover(event, isEditing, note.dataset.noteNumber);
-  });
+  // Creates Event Listeners for the Edit and Delete buttons
+  createEventListeners(note.dataset.noteNumber);
 
   // Sets isEditing to true so mouseover/mouseout effect doesn't work
   isEditing = true;
@@ -98,6 +135,12 @@ function editNote(noteNum) {
     note.readOnly = true;
     editBtn.innerHTML = 'Edit';
     createNoteBtn.disabled = false;
+
+     // Saves values to storage
+     localStorage.setItem('noteArr', JSON.stringify(noteArr));
+     localStorage.setItem('numNotes', JSON.stringify(numNotes));
+     localStorage.setItem('noteIDCounter', JSON.stringify(noteIDCounter));
+
     // *** TEMP LINE DELETE LATER *** \\
     console.log('notes in list');
     noteArr.forEach(index => console.log(`${index.noteText} ${index.noteID}`));
@@ -107,13 +150,20 @@ function editNote(noteNum) {
 // Deletes a new note, enables "New Note" button, and decreases note count
 function deleteNote(noteNum) {
   document.querySelector(`.note${noteNum}`).remove();
+
   for (let i = 0; i < noteArr.length; i++) {
     if (noteArr[i].noteID == noteNum) {
       noteArr.splice(i, 1);
     }
   }
+
   createNoteBtn.disabled = false;
   numNotes--;
+
+  // Saves values to storage
+  localStorage.setItem('noteArr', JSON.stringify(noteArr));
+  localStorage.setItem('numNotes', JSON.stringify(numNotes));
+
   // *** TEMP LINE DELETE LATER *** \\
   console.log('notes in list');
   noteArr.forEach(index => console.log(`${index.noteText} ${index.noteID}`));
