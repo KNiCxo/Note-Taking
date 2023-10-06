@@ -7,6 +7,9 @@ const notesDiv = document.getElementById('notesDiv');
 // Counter for note total
 let numNotes = 0;
 
+// Gives each note a unique ID
+let noteIDCounter = 0;
+
 // Array to store all notes
 let noteArr = [];
 
@@ -18,32 +21,33 @@ createNoteBtn.addEventListener('click', createNote);
 
 // Creates a new note
 function createNote() {
-  // Increaes note count
+  // Increaes note and noteID count
   numNotes++;
+  noteIDCounter++;
 
   // Adds note HTML to the top of the Div
   const note = document.createElement("div");
   note.className = "noteElement";
-  note.classList.add(`note${numNotes}`);
-  note.dataset.noteNumber = numNotes;
+  note.classList.add(`note${noteIDCounter}`);
+  note.dataset.noteNumber = noteIDCounter;
   note.innerHTML = 
-  `<textarea class="textArea${numNotes}" cols="35" rows="10"></textarea> 
-   <button class="edit editBtn${numNotes}">Save</button> 
-   <button class="delete deleteBtn${numNotes}">Delete</button>`;
+  `<textarea class="textArea${noteIDCounter}" cols="35" rows="10"></textarea> 
+   <button class="edit editBtn${noteIDCounter}">Save</button> 
+   <button class="delete deleteBtn${noteIDCounter}">Delete</button>`;
   notesDiv.prepend(note);
 
   // Saves the new note when clicked
-  document.querySelector(`.editBtn${numNotes}`).addEventListener('click', () => {
+  document.querySelector(`.editBtn${noteIDCounter}`).addEventListener('click', () => {
     editNote(note.dataset.noteNumber);
   });
 
   // Deletes the new note when clicked
-  document.querySelector(`.deleteBtn${numNotes}`).addEventListener('click', () => {
+  document.querySelector(`.deleteBtn${noteIDCounter}`).addEventListener('click', () => {
     deleteNote(note.dataset.noteNumber);
   });
 
   // Edit and Delete buttons appear when hovering over the note
-  document.querySelector(`.note${numNotes}`).addEventListener('mouseover', (event) => {
+  document.querySelector(`.note${noteIDCounter}`).addEventListener('mouseover', (event) => {
     hover(event, isEditing, note.dataset.noteNumber);
   });
   
@@ -77,14 +81,14 @@ function editNote(noteNum) {
     // Else, store new note value in the array at the correct index
     if (numNotes > noteArr.length) {
       const noteText = note.value
-      const noteID = noteNum;
+      const noteID = noteIDCounter;
       noteArr.push({
         noteText,
         noteID
       });
     } else {
       noteArr.forEach(index => {
-        if (index.noteID === noteNum) {
+        if (index.noteID == noteNum) {
           index.noteText = note.value
         }
       });
