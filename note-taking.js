@@ -76,9 +76,18 @@ function editNote(noteNum) {
     // If numNotes > array length then it is a new note and should be pushed into the array
     // Else, store new note value in the array at the correct index
     if (numNotes > noteArr.length) {
-      noteArr.push(note.value);
+      const noteText = note.value
+      const noteID = noteNum;
+      noteArr.push({
+        noteText,
+        noteID
+      });
     } else {
-      noteArr[noteNum - 1] = note.value;
+      noteArr.forEach(index => {
+        if (index.noteID === noteNum) {
+          index.noteText = note.value
+        }
+      });
     }
 
     isEditing = false;
@@ -86,15 +95,24 @@ function editNote(noteNum) {
     editBtn.innerHTML = 'Edit';
     createNoteBtn.disabled = false;
     // *** TEMP LINE DELETE LATER *** \\
-    noteArr.forEach(index => console.log(index));
+    console.log('notes in list');
+    noteArr.forEach(index => console.log(`${index.noteText} ${index.noteID}`));
   }
 }
 
 // Deletes a new note, enables "New Note" button, and decreases note count
 function deleteNote(noteNum) {
   document.querySelector(`.note${noteNum}`).remove();
+  for (let i = 0; i < noteArr.length; i++) {
+    if (noteArr[i].noteID == noteNum) {
+      noteArr.splice(i, 1);
+    }
+  }
   createNoteBtn.disabled = false;
   numNotes--;
+  // *** TEMP LINE DELETE LATER *** \\
+  console.log('notes in list');
+  noteArr.forEach(index => console.log(`${index.noteText} ${index.noteID}`));
 }
 
 // Shows or hides Edit and Delete buttons depending on event type
