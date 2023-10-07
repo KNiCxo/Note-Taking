@@ -1,5 +1,6 @@
-// "New Note" button element
+// "New Note" and "Sort" button elements
 const createNoteBtn = document.getElementById('createNote');
+const sortBtn = document.getElementById('sort');
 
 // Notes Div element
 const notesDiv = document.getElementById('notesDiv');
@@ -25,11 +26,39 @@ if (!noteArr) {
 // Flag for when user is editing a note
 let isEditing = false;
 
-// Runs createNote function when clicked
-createNoteBtn.addEventListener('click', createNote);
+// Flag for whether notes are being sorted by newest of oldest
+let sortNewest = true;
 
 // Loads all existing notes (if there are any)
 drawNotes();
+
+// Runs createNote function when clicked
+createNoteBtn.addEventListener('click', createNote);
+
+// Sorts notes by newest or oldest when clicked
+sortBtn.addEventListener('click', () => {
+  // Sorts array
+  let newNoteArr = []
+  for (let i = noteArr.length - 1; i >= 0; i--) {
+    newNoteArr.push(noteArr[i]);
+  }
+
+  // Changes button HTML
+  if (sortNewest) {
+    sortNewest = false;
+    sortBtn.innerHTML = 'Sort: Oldest';
+  } else {
+    sortNewest = true;
+    sortBtn.innerHTML = 'Sort: Newest';
+  }
+
+  // Stores sorted array into note array
+  noteArr = newNoteArr;
+
+  // Redraws note HTML
+  notesDiv.innerHTML = '';
+  drawNotes();
+})
 
 // Creates button functionality for each note node
 function createEventListeners(noteID) {
@@ -58,8 +87,8 @@ function createEventListeners(noteID) {
 function drawNotes() {
   noteArr.forEach(index => {
     // Adds note HTML to the top of the Div
-    const note = document.createElement("div");
-    note.className = "noteElement";
+    const note = document.createElement('div');
+    note.className = 'noteElement';
     note.classList.add(`note${index.noteID}`);
     note.dataset.noteNumber = index.noteID;
     note.innerHTML = 
@@ -68,8 +97,10 @@ function drawNotes() {
     <button class="delete deleteBtn${index.noteID}">Delete</button>`;
     notesDiv.prepend(note);
 
-    // Creates Event Listeners for the Edit and Delete buttons
+    // Creates Event Listeners for the Edit and Delete buttons and hides them
     createEventListeners(note.dataset.noteNumber);
+    document.querySelector(`.editBtn${note.dataset.noteNumber}`).style.visibility = 'hidden';
+    document.querySelector(`.deleteBtn${note.dataset.noteNumber}`).style.visibility = 'hidden';
   });
 }
 
@@ -80,8 +111,8 @@ function createNote() {
   noteIDCounter++;
 
   // Adds note HTML to the top of the Div
-  const note = document.createElement("div");
-  note.className = "noteElement";
+  const note = document.createElement('div');
+  note.className = 'noteElement';
   note.classList.add(`note${noteIDCounter}`);
   note.dataset.noteNumber = noteIDCounter;
   note.innerHTML = 
@@ -96,8 +127,9 @@ function createNote() {
   // Sets isEditing to true so mouseover/mouseout effect doesn't work
   isEditing = true;
 
-  // Prevents "New Note" button from being pressed
+  // Prevents "New Note" and "Sort" button from being pressed
   createNoteBtn.disabled = true;
+  sortBtn.disabled = true;
 }
 
 // Function to edit/save a note 
@@ -106,23 +138,37 @@ function editNote(noteNum) {
   const editBtn = document.querySelector(`.editBtn${noteNum}`);
   const note = document.querySelector(`.textArea${noteNum}`);
 
-  // If button is clicked and says 'Edit", unlock note, change button to 'Save', and lock 'New Note' button
-  // Else, save note, lock note, change button to 'Edit', and unlock 'New Note' button
+  // If button is clicked and says "Edit", unlock note, change button to "Save", and lock "New Note" and "Sort" buttons
+  // Else, save note, lock note, change button to "Edit", and unlock "New Note" and "Sort" buttons
   if (editBtn.innerHTML === 'Edit') {
     isEditing = true;
     note.readOnly = false;
     editBtn.innerHTML = 'Save';
     createNoteBtn.disabled = true;
+    sortBtn.disabled = true;
   } else {
     // If numNotes > array length then it is a new note and should be pushed into the array
     // Else, store new note value in the array at the correct index
     if (numNotes > noteArr.length) {
       const noteText = note.value
       const noteID = noteIDCounter;
-      noteArr.push({
-        noteText,
-        noteID
-      });
+
+      // If notes are sorted by "Newest", then push to array
+      // Else, add to the front of the array and redraw notes
+      if (sortNewest) {
+        noteArr.push({
+          noteText,
+          noteID
+        });
+      } else {
+        noteArr.unshift({
+          noteText,
+          noteID
+        });
+
+        notesDiv.innerHTML = '';
+        drawNotes();
+      }
     } else {
       noteArr.forEach(index => {
         if (index.noteID == noteNum) {
@@ -135,11 +181,12 @@ function editNote(noteNum) {
     note.readOnly = true;
     editBtn.innerHTML = 'Edit';
     createNoteBtn.disabled = false;
-
-     // Saves values to storage
-     localStorage.setItem('noteArr', JSON.stringify(noteArr));
-     localStorage.setItem('numNotes', JSON.stringify(numNotes));
-     localStorage.setItem('noteIDCounter', JSON.stringify(noteIDCounter));
+    sortBtn.disabled = false;
+    
+    // Saves values to storage
+    localStorage.setItem('noteArr', JSON.stringify(noteArr));
+    localStorage.setItem('numNotes', JSON.stringify(numNotes));
+    localStorage.setItem('noteIDCounter', JSON.stringify(noteIDCounter));
 
     // *** TEMP LINE DELETE LATER *** \\
     console.log('notes in list');
@@ -147,7 +194,7 @@ function editNote(noteNum) {
   }
 }
 
-// Deletes a new note, enables "New Note" button, and decreases note count
+// Deletes a new note, enables "New Note" and "Sort" button, and decreases note count
 function deleteNote(noteNum) {
   document.querySelector(`.note${noteNum}`).remove();
 
@@ -158,6 +205,7 @@ function deleteNote(noteNum) {
   }
 
   createNoteBtn.disabled = false;
+  sortBtn.disabled = false;
   numNotes--;
 
   // Saves values to storage
@@ -172,7 +220,7 @@ function deleteNote(noteNum) {
 // Shows or hides Edit and Delete buttons depending on event type
 function hover(event, isEditing, noteNum) {
   if (!isEditing) {
-    document.querySelector(`.editBtn${noteNum}`).style.visibility = (event.type === "mouseover") ? "visible" : "hidden";
-    document.querySelector(`.deleteBtn${noteNum}`).style.visibility = (event.type === "mouseover") ? "visible" : "hidden";
+    document.querySelector(`.editBtn${noteNum}`).style.visibility = (event.type === 'mouseover') ? 'visible' : 'hidden';
+    document.querySelector(`.deleteBtn${noteNum}`).style.visibility = (event.type === 'mouseover') ? 'visible' : 'hidden';
   }
 }
