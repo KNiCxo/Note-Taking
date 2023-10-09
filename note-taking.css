@@ -16,11 +16,11 @@ body {
   color: white;
   text-align: center;
   font-family: oswald-regular;
-  margin-top: 20px;
 }
 
 /* Styling for h1 */
 h1 {
+  margin: 15px 0px 20px;
   text-shadow: 2px 2px black;
   font-size: 40px;
 }
@@ -60,18 +60,19 @@ textarea {
   padding: 10px;
   font-family: oswald-regular;
   font-size: 21px;
+  grid-area: textarea;
 }
 
 /* Styling for Div element that holds all of the notes */
 #notesDiv {
-  margin-top: 30px;
+  margin-top: 35px;
   width: 100%;
+  text-align: center;
 }
 
 /* Styling for each individual note element */
 .noteElement {
-  margin-bottom: 15px;
-  text-align: center;
+  margin-bottom: 25px;
 }
 
 /* Styling for Edit and Delete buttons */
@@ -91,4 +92,55 @@ textarea {
 .edit:hover, .delete:hover {
   background-color:rgb(72, 69, 69);
   cursor: pointer;
+}
+
+/* Styling for different widths */
+@media only screen and (min-width: 800px){
+  h1 {
+    margin: 25px 0px 35px;
+    font-size: 75px;
+  }
+
+  #createNote, #sort {
+    width: 200px;
+    height: 60px;
+    font-size: 30px;
+  }
+
+  .noteElement {
+    margin-bottom: 45px;
+  }
+
+  textarea {
+    width: 675px;
+    height: 500px;
+    padding: 18px;
+    font-size: 35px;
+  }
+
+  .edit, .delete {
+    width: 250px;
+    height: 50px;
+    font-size: 30px;
+  }
+
+  .edit {
+    margin-right: 10px;
+  }
+}
+
+@media only screen and (min-width: 1000px){
+  textarea {
+    width: 900px;
+  }
+}
+
+/* Styling for different heights */
+@media only screen and (min-height: 844px){
+}
+
+@media only screen and (min-height: 1080px){
+}
+
+@media only screen and (min-height: 1280px){
 }

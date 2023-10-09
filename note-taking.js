@@ -92,9 +92,11 @@ function drawNotes() {
     note.classList.add(`note${index.noteID}`);
     note.dataset.noteNumber = index.noteID;
     note.innerHTML = 
-    `<textarea class="textArea${index.noteID}" cols="35" rows="10" readOnly>${index.noteText}</textarea> 
-    <button class="edit editBtn${index.noteID}">Edit</button> 
-    <button class="delete deleteBtn${index.noteID}">Delete</button>`;
+    `<textarea class="textArea${index.noteID}" cols="35" rows="10" readOnly>${index.noteText}</textarea>
+    <div class="noteButtons">
+      <button class="edit editBtn${index.noteID}">Edit</button> 
+      <button class="delete deleteBtn${index.noteID}">Delete</button>
+    </div>`;
     notesDiv.prepend(note);
 
     // Creates Event Listeners for the Edit and Delete buttons and hides them
@@ -116,9 +118,11 @@ function createNote() {
   note.classList.add(`note${noteIDCounter}`);
   note.dataset.noteNumber = noteIDCounter;
   note.innerHTML = 
-  `<textarea class="textArea${noteIDCounter}" cols="35" rows="10"></textarea> 
-   <button class="edit editBtn${noteIDCounter}">Save</button> 
-   <button class="delete deleteBtn${noteIDCounter}">Delete</button>`;
+  `<textarea class="textArea${noteIDCounter}" cols="35" rows="10"></textarea>
+  <div class="noteButtons">
+    <button class="edit editBtn${noteIDCounter}">Save</button> 
+    <button class="delete deleteBtn${noteIDCounter}">Delete</button>
+  </div>`;
   notesDiv.prepend(note);
 
   // Creates Event Listeners for the Edit and Delete buttons
