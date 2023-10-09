@@ -134,13 +134,3 @@ textarea {
     width: 900px;
   }
 }
-
-/* Styling for different heights */
-@media only screen and (min-height: 844px){
-}
-
-@media only screen and (min-height: 1080px){
-}
-
-@media only screen and (min-height: 1280px){
-}
