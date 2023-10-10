@@ -191,10 +191,6 @@ function editNote(noteNum) {
     localStorage.setItem('noteArr', JSON.stringify(noteArr));
     localStorage.setItem('numNotes', JSON.stringify(numNotes));
     localStorage.setItem('noteIDCounter', JSON.stringify(noteIDCounter));
-
-    // *** TEMP LINE DELETE LATER *** \\
-    console.log('notes in list');
-    noteArr.forEach(index => console.log(`${index.noteText} ${index.noteID}`));
   }
 }
 
@@ -208,6 +204,7 @@ function deleteNote(noteNum) {
     }
   }
 
+  isEditing = false;
   createNoteBtn.disabled = false;
   sortBtn.disabled = false;
   numNotes--;
@@ -215,10 +212,6 @@ function deleteNote(noteNum) {
   // Saves values to storage
   localStorage.setItem('noteArr', JSON.stringify(noteArr));
   localStorage.setItem('numNotes', JSON.stringify(numNotes));
-
-  // *** TEMP LINE DELETE LATER *** \\
-  console.log('notes in list');
-  noteArr.forEach(index => console.log(`${index.noteText} ${index.noteID}`));
 }
 
 // Shows or hides Edit and Delete buttons depending on event type

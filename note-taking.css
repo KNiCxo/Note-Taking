@@ -112,8 +112,8 @@ textarea {
   }
 
   textarea {
-    width: 675px;
-    height: 500px;
+    width: 575px;
+    height: 300px;
     padding: 18px;
     font-size: 35px;
   }
@@ -126,11 +126,5 @@ textarea {
 
   .edit {
     margin-right: 10px;
-  }
-}
-
-@media only screen and (min-width: 1000px){
-  textarea {
-    width: 900px;
   }
 }
